@@ -1,16 +1,24 @@
 create random lines of any length, printable ascii
 useful for testing things
+decently fast, hundreds of MBytes/sec on modern hardware
 
 $ ./spew
-2017/02/03 13:24:22 ./spew linelength lines
-$ ./spew 80 10
-Pg5\Jx'9/ugzL]JwcJHZkG%fOuY3C%g!IA[lVOyKVw[9dVu8y%TPl72)%)e\q#x\uTcSvyni'u6xkNCv
-$wm'x7DN6$bMCHh@0!SMl#&GxJ*nDF8v)/yu8$Eu0Fglpe"W&zgBLG5su'Ovf86vB%ifhHU29Wzlgo84
-B9rpA$8h#e9FP\wJvQ[k/T#D#QIBNnPt&i\53dhJtv!Ez9h5AyDuy(Q4sn2OJgussqq1VWm1uBiu'Xhh
-Sg5tps*zYtq"15H1gLVJ7tN[H9$2yG@TNmg(rjNSXMAE9i'!G7Hxd42Yf&*U3UzV@1!f0\1VWgTf%3yL
-9XA7iC\6]Es$o"MXLR[ixQOj&5A$t)2kd@otUN#60i'mR0UGq0WzcZHnymlCICtRppUdfQ%!7"'aa310
-xZe%(vlW3es4Z*QaaK01g]8MoTwj@YR3U9iK'tF*zaI\tDWJL/R*'Q7!J'Ay&R2jz)DME8jt/P&3("0x
-XkC5s00"5eQA5#s"3T5Tm*VSRNHulPR/Dd5wh7!7S'oi5of@PDKRUbO3U5$WEu9n88$nR[a#jGxm4m/8
-DDtM4V'CS(Y2@Uae94R(3XCWeI*s7EE3ARG7n3KRLn3Lh9'b88tnSoGtYKvw0E%%Mx2%2"u(yL0R4'wi
-]G@bK@5WkF$[Nc(tk1&SGVwOMkYzs(CVj0gCnhoLB&SiDSKUH1@"BSohsTgSiq4Y@BjAlR91SJHa''8%
-*bJlt/1m]H4T\5DtCWP8A32EGC\tTlCaST6nPPju@"I4!o%O3)RA\&W#Z3g!r]4ZAnjNnzt7kU!9bb35
+H 4kvSFY)\;aYc?>:-`DbdZL{>S:|p<Q
+
+$ ./spew 64 5
+^UxGDX$+9OXwJE-EAX,]~0@aj*R;om7MUG7)xrriO!~_3$R)XnY~T%I>h:s@n~vS
+d_y2Sxb<{N%B-mb'|^u<b\'y;lmRm+c1%n4bmlQ^bo'w]WPO-1i3u]cs<7^#s(\5
+-\b$sW\%B%1!TSo>re_{Bst!s:nd\}~JwN,?e\\!K\AK70l5EvU~#$.n?6SI.tY{
+J<)g{m,jj<cw>MzkE]G@H-K)Y}#VqF;oA0by>ZOQy64]\qF+4w7\$8tcZ0=l"F31
+E@\A\in\0QA_c8jc\.6qZmERuKs;&VYya=k*{QWx=B v}#P"56(\/<+W,He/b\53
+
+$ ./spew 32 0
+fr9.&%dEQhm=ubf3Rt|"K?@PH\6\URKa$ ./spew -h
+
+Usage: spew [LENGTH [LINES]]
+
+generate random strings, one per line
+
+Arguments:
+  LENGTH=32    length of generated string
+  LINES=1      number of lines of output (0 will output a string without a newline)

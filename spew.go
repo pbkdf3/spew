@@ -20,14 +20,15 @@
 package main
 
 import (
-	"log"
 	"math/rand"
 	"os"
-	"strconv"
 	"time"
+
+	"github.com/jawher/mow.cli"
 )
 
-const letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQR/\\STUVWXYZ1234567890!@#<>$%&*()[]'\""
+/* randstring from stack overflow, slightly modified */
+const letterBytes = ` !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_` + "`" + `abcdefghijklmnopqrstuvwxyz{|}~`
 const (
 	letterIdxBits = 7                    // 7 bits to represent a letter index
 	letterIdxMask = 1<<letterIdxBits - 1 // All 1-bits, as many as letterIdxBits
@@ -55,18 +56,20 @@ func RandString(n int) string {
 }
 
 func main() {
-	if len(os.Args) < 3 {
-		log.Fatalf("%s linelength lines\n", os.Args[0])
+	app := cli.App("spew", "generate random strings, one per line")
+	app.Spec = "[LENGTH [LINES]]"
+	ll := app.IntArg("LENGTH", 32, "length of generated string")
+	l := app.IntArg("LINES", 1, "number of lines of output (0 will output a string without a newline)")
+
+	eol := "\n"
+	app.Action = func() {
+		if *l < 1 {
+			eol = ""
+			*l = 1
+		}
+		for i := 0; i < *l; i++ {
+			os.Stdout.Write([]byte(RandString(*ll) + eol))
+		}
 	}
-	ll, err := strconv.ParseUint(os.Args[1], 10, 64)
-	if err != nil {
-		log.Fatal(err)
-	}
-	l, err := strconv.ParseInt(os.Args[2], 10, 64)
-	if err != nil {
-		log.Fatal(err)
-	}
-	for i := 0; i < int(l); i++ {
-		os.Stdout.Write([]byte(RandString(int(ll)) + "\n"))
-	}
+	app.Run(os.Args)
 }
