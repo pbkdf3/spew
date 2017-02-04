@@ -59,7 +59,7 @@ func main() {
 	app := cli.App("spew", "generate random strings, one per line")
 	app.Spec = "[LENGTH [LINES]]"
 	ll := app.IntArg("LENGTH", 32, "length of generated string")
-	l := app.IntArg("LINES", 1, "number of lines of output (0 will output a string without a newline)")
+	l := app.IntArg("LINES", 0, "number of lines of output (0 will output a string without a newline)")
 
 	eol := "\n"
 	app.Action = func() {
