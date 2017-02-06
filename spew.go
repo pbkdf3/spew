@@ -55,9 +55,13 @@ func RandString(n int) string {
 	return string(b)
 }
 
+var v string // filled in by linker
+
 func main() {
+
 	app := cli.App("spew", "generate random strings, one per line")
 	app.Spec = "[LENGTH [LINES]]"
+	app.Version("v version", v)
 	ll := app.IntArg("LENGTH", 32, "length of generated string")
 	l := app.IntArg("LINES", 0, "number of lines of output (0 will output a string without a newline)")
 
