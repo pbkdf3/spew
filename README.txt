@@ -2,8 +2,7 @@ create random lines of any length, printable ascii
 useful for testing things
 decently fast, hundreds of MBytes/sec on modern hardware
 
-$ ./spew
-fr9.&%dEQhm=ubf3Rt|"K?@PH\6\URKa$ ./spew -h
+$ ./spew -h
 
 Usage: spew [LENGTH [LINES]]
 
@@ -11,9 +10,13 @@ generate random strings, one per line
 
 Arguments:
   LENGTH=32    length of generated string
-  LINES=0      number of lines of output (0 will output a string without a newline)
+    LINES=0      number of lines of output (0 will output a string without a newline)
 
-$ ./spew 32 1
+Options:
+  -v, --version    Show the version and exit
+
+$ ./spew
+;tbI7(+8<=jbLv\_b+wS+c;u$8{(,e})$ ./spew 32 1
 H 4kvSFY)\;aYc?>:-`DbdZL{>S:|p<Q
 
 $ ./spew 64 5
