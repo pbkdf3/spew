@@ -20,6 +20,7 @@
 package main
 
 import (
+	"bufio"
 	"math/rand"
 	"os"
 	"time"
@@ -35,14 +36,12 @@ const (
 	letterIdxMax  = 63 / letterIdxBits   // # of letter indices fitting in 63 bits
 )
 
-var src = rand.NewSource(time.Now().UnixNano())
-
 func RandString(n int) string {
 	b := make([]byte, n)
 	// A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
-	for i, cache, remain := n-1, src.Int63(), letterIdxMax; i >= 0; {
+	for i, cache, remain := n-1, rand.Int63(), letterIdxMax; i >= 0; {
 		if remain == 0 {
-			cache, remain = src.Int63(), letterIdxMax
+			cache, remain = rand.Int63(), letterIdxMax
 		}
 		if idx := int(cache & letterIdxMask); idx < len(letterBytes) {
 			b[i] = letterBytes[idx]
@@ -55,25 +54,35 @@ func RandString(n int) string {
 	return string(b)
 }
 
-var v string // filled in by linker
+func spew() {
+	f := bufio.NewWriter(os.Stdout)
+	defer f.Flush()
 
+	if *l < 1 {
+		eol = ""
+		*l = 1
+	}
+	for i := 0; i < *l; i++ {
+		f.Write([]byte(RandString(*ll) + eol))
+	}
+}
+
+var l, ll *int
+var eol string
+var v string // filled in by linker
 func main() {
+	rand.Seed(time.Now().UnixNano())
 	app := cli.App("spew", "generate random strings, one per line")
 	app.Spec = "[LENGTH [LINES]]"
 	app.Version("v version", v)
 
-	ll := app.IntArg("LENGTH", 32, "length of generated string")
-	l := app.IntArg("LINES", 0, "number of lines of output (0 will output a string without a newline)")
+	ll = app.IntArg("LENGTH", 32, "length of generated string")
+	l = app.IntArg("LINES", 0, "number of lines of output (0 will output a string without a newline)")
 
-	eol := "\n"
+	eol = "\n"
 	app.Action = func() {
-		if *l < 1 {
-			eol = ""
-			*l = 1
-		}
-		for i := 0; i < *l; i++ {
-			os.Stdout.Write([]byte(RandString(*ll) + eol))
-		}
+
+		spew()
 	}
 	app.Run(os.Args)
 }
