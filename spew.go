@@ -23,6 +23,7 @@ import (
 	"bufio"
 	"math/rand"
 	"os"
+	"runtime"
 	"time"
 
 	"github.com/jawher/mow.cli"
@@ -36,12 +37,12 @@ const (
 	letterIdxMax  = 63 / letterIdxBits   // # of letter indices fitting in 63 bits
 )
 
-func RandString(n int) string {
-	b := make([]byte, n)
+func RandString(src rand.Source, n int) []byte {
+	b := make([]byte, n+1) // extra space for potential EOL later appended
 	// A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
-	for i, cache, remain := n-1, rand.Int63(), letterIdxMax; i >= 0; {
+	for i, cache, remain := n-1, src.Int63(), letterIdxMax; i >= 0; {
 		if remain == 0 {
-			cache, remain = rand.Int63(), letterIdxMax
+			cache, remain = src.Int63(), letterIdxMax
 		}
 		if idx := int(cache & letterIdxMask); idx < len(letterBytes) {
 			b[i] = letterBytes[idx]
@@ -51,19 +52,16 @@ func RandString(n int) string {
 		remain--
 	}
 
-	return string(b)
+	return b
 }
 
-func spew() {
-	f := bufio.NewWriter(os.Stdout)
-	defer f.Flush()
+/* goroutine, exits when program exits (messy but in this case ok?) */
+func spew(out chan []byte) {
 
-	if *l < 1 {
-		eol = ""
-		*l = 1
-	}
-	for i := 0; i < *l; i++ {
-		f.Write([]byte(RandString(*ll) + eol))
+	src := rand.NewSource(time.Now().UnixNano())
+
+	for {
+		out <- append(RandString(src, *ll), eol...)
 	}
 }
 
@@ -71,7 +69,6 @@ var l, ll *int
 var eol string
 var v string // filled in by linker
 func main() {
-	rand.Seed(time.Now().UnixNano())
 	app := cli.App("spew", "generate random strings, one per line")
 	app.Spec = "[LENGTH [LINES]]"
 	app.Version("v version", v)
@@ -81,8 +78,36 @@ func main() {
 
 	eol = "\n"
 	app.Action = func() {
+		if *l < 1 {
+			eol = ""
+			*l = 1
+		}
 
-		spew()
+		f := bufio.NewWriter(os.Stdout)
+		defer f.Flush()
+		out := make(chan []byte, 1024)
+
+		var goroutines int
+		/* run on up to 8 threads */
+		if runtime.GOMAXPROCS(-1) >= 8 {
+			goroutines = 8
+		} else {
+			goroutines = runtime.GOMAXPROCS(-1)
+		}
+
+		for i := 0; i < goroutines; i++ {
+			go spew(out)
+		}
+
+		n := 0
+		for rnd := range out {
+			f.Write(rnd)
+			n++
+			if n >= *l {
+				break
+			}
+		}
+
 	}
 	app.Run(os.Args)
 }
