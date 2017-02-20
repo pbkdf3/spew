@@ -38,7 +38,7 @@ const (
 )
 
 func RandString(src rand.Source, n int) []byte {
-	b := make([]byte, n+1) // extra space for potential EOL later appended
+	b := make([]byte, n) // XXX NOT extra space for potential EOL later appended
 	// A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
 	for i, cache, remain := n-1, src.Int63(), letterIdxMax; i >= 0; {
 		if remain == 0 {
