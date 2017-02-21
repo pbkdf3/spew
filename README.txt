@@ -2,6 +2,8 @@ create random lines of any length, printable ascii
 useful for testing things
 decently fast, hundreds of MBytes/sec on modern hardware
 
+binaries here: https://github.com/pbkdf3/spew/releases/download/v20170220/spew_v20170220.tar.gz
+
 $ ./spew -h
 
 Usage: spew [LENGTH [LINES]]
